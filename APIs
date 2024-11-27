@@ -1,0 +1,52 @@
+PF  
+all-coal-companies -> get_cc_names -> blank
+download_report_cc_pf_cc -> {cc_code:str, from_date:str, to_date:str}
+cc_pf_area -> {area_name:[]}
+cc_pf_unit -> {unit_name:[]}
+get_unit_names -> {selected_cc:str}
+
+Pension 
+all-coal-companies -> get_cc_names -> blank
+cc_pen_cc -> {cc_code:str, from_date:str, to_date:str}
+cc_pen_area -> {area_name:[]}
+cc_pen_unit -> {unit_name:[]}
+
+Advance
+all-coal-companies -> get_cc_names -> blank
+cc_adv_cc -> {cc_code:str, from_date:str, to_date:str}
+cc_adv_area -> {area_name:[]}
+cc_adv_unit -> {unit_name:[]}
+
+---------------------------------------------------------------
+all-regional-offices -> get_ro_names -> blank
+ro_pf -> {ro_name:str, from_date:str, to_date:str}
+ro_pen -> {ro_name:str, from_date:str, to_date:str}
+ro_adv -> {ro_name:str, from_date:str, to_date:str}
+---------------------------------------------------------------
+Officers
+all-coal-companies -> get_cc_names -> blank
+offcr_pf_cc -> {cc_code:str, from_date:str, to_date:str}
+offcr_pen_cc -> {cc_code:str, from_date:str, to_date:str}
+offcr_adv_cc -> {cc_code:str, from_date:str, to_date:str}
+
+offcr_pf_area -> {cc_code:str, area_name:[], from_date:str, to_date:str}
+offcr_pen_area -> {cc_code:str, area_name:[], from_date:str, to_date:str}
+offcr_adv_area -> {cc_code:str, area_name:[], from_date:str, to_date:str}
+
+offcr_pf_unit -> {cc_code:str, unit_name:[], from_date:str, to_date:str}
+offcr_pen_unit -> {cc_code:str, unit_name:[], from_date:str, to_date:str}
+offcr_adv_unit -> {cc_code:str, unit_name:[], from_date:str, to_date:str}
+
+offcr_pf_ro -> {ro_name:str, from_date:str, to_date:str}
+offcr_pen_ro -> {ro_name:str, from_date:str, to_date:str}
+offcr_adv_ro -> {ro_name:str, from_date:str, to_date:str}
+
+
+
+
+
+
+
+all-coal-companies -> get_cc_names -> blank
+cc_areas -> get_area_names -> []
+cc_units -> get_unit_names -> []
