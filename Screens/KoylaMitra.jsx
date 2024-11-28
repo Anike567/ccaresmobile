@@ -32,9 +32,78 @@ import { YearsOfServiceContext }  from '../store/context/serviceYears';
 
 import { useNavigation } from '@react-navigation/native';
 import { Feather } from '@expo/vector-icons';
+// import { OptionButtonView, PlainTextView } from '../components/KoylamitraMenus';
+
+
+const OptionButtonView = (props) => 
+{
+    const getDoubleDigits = d =>
+    {
+        if(d.length === 1)
+            return '0'+d;  
+        return d;
+    }
+
+    const PensionHandler = () => {
+    
+        const queryNow = new Date()
+        const displayQueryData = `${getDoubleDigits(queryNow.getDate().toString())}/${getDoubleDigits((queryNow.getMonth() + 1).toString())}/${queryNow.getFullYear()} ${getDoubleDigits(queryNow.getHours().toString())}:${getDoubleDigits(queryNow.getMinutes().toString())}  `
+        props.seth((prevC) => [...prevC, {'time':displayQueryData, 'type':'plaintext','message':'Pension'}])
+    }
+
+
+    const ProvidentFundHandler = () => {
+    
+        const queryNow = new Date()
+        const displayQueryData = `${getDoubleDigits(queryNow.getDate().toString())}/${getDoubleDigits((queryNow.getMonth() + 1).toString())}/${queryNow.getFullYear()} ${getDoubleDigits(queryNow.getHours().toString())}:${getDoubleDigits(queryNow.getMinutes().toString())}  `
+
+        props.seth((prevC) => [...prevC, {'time':displayQueryData, 'type':'plaintext','message':'Provident Fund'}])
+    }
+
+    const AdvanceHandler = () => {
+    
+        const queryNow = new Date()
+        const displayQueryData = `${getDoubleDigits(queryNow.getDate().toString())}/${getDoubleDigits((queryNow.getMonth() + 1).toString())}/${queryNow.getFullYear()} ${getDoubleDigits(queryNow.getHours().toString())}:${getDoubleDigits(queryNow.getMinutes().toString())}  `
+
+        props.seth((prevC) => [...prevC, {'time':displayQueryData, 'type':'plaintext','message':'Advance'}])
+    }
+    
+    const handlerMaps = {
+        'pfHandler':ProvidentFundHandler,
+        'pensionHandler':PensionHandler,
+        'advanceHandler':AdvanceHandler               
+    }
+
+
+        return(
+            <Pressable 
+                style={styles.optionbutton}
+                onPress={handlerMaps[props.handler]}
+            >
+                <Text style={styles.buttonText}>{props.message}</Text>    
+            </Pressable>
+        )
+    }
+    
+    const PlainTextView = (props) =>
+    {
+        return(
+            <Text style={styles.boxUser}>
+                {props.message}
+        </Text>
+        )
+        
+    }
+    
+
+
+
+
 
 const Koylamitrascreen = ({navigation}) => {
    
+    const valueRef = useRef(0);
+
     function getDoubleDigits(d){
         if(d.length === 1)
             return '0'+d;  
@@ -49,17 +118,43 @@ const Koylamitrascreen = ({navigation}) => {
 
     const yearsContext = useContext(YearsOfServiceContext);
     const [currentChatMessage, setCurrentChatMessage] = useState('')
-    const [chatHistory, setChatHistory] = useState([{
-        time:displayData, 
-        role:'model','message':'Hi, \nI am Koyla Mitra.\nChoose the section you want to expand'
-    },
-    // {
-    //     time:displayData, 
-    //     role:'model','message':'1. Paragraph1 \n2. Paragraph2 \n3. Paragraph3'
-    // }
+    const [chatHistory, setChatHistory] = useState([
+        {
+            time:displayData, 
+            type:'plaintext',
+            message:'Hello, \nI am Koyla Mitra.\nHow can I help you ?',
+            entity:'agent'
+        },
+        {
+            time:displayData, 
+            type:'option',
+            message:'Provident Fund',
+            handler: 'pfHandler',
+            entity: null
+        },
+        {
+            time:displayData, 
+            type:'option',
+            message:'Pension',
+            handler: 'pensionHandler',
+            entity: null
+        },
+        {
+            time:displayData, 
+            type:'option',
+            message:'Advance',
+            handler: 'advanceHandler',
+            entity: null
+        },
 ]);
+
+        // useEffect(() => {  
+        //     }, [chatHistory]
+        // ); 
+
+
+
     const [displayActivityIndicator, setDisplayActivityIndicator] = useState(false)
-    
     
     const scrollViewRef = useRef(null);
     const scrollToBottom = () => {
@@ -68,73 +163,60 @@ const Koylamitrascreen = ({navigation}) => {
         }
     };
     
-
-
-
-    function inputMessageHandler(){
-
-        // scrollToBottom();
-        const queryNow = new Date()
-        // const displayQueryData = `${queryNow.getDate()}/${queryNow.getMonth() + 1}/${queryNow.getFullYear()} ${getDoubleDigits(queryNow.getHours().toString())}:${getDoubleDigits(queryNow.getMinutes().toString())}`;
-        const displayQueryData = `${getDoubleDigits(queryNow.getDate().toString())}/${getDoubleDigits((queryNow.getMonth() + 1).toString())}/${queryNow.getFullYear()} ${getDoubleDigits(queryNow.getHours().toString())}:${getDoubleDigits(queryNow.getMinutes().toString())}  `
-
-        setDisplayActivityIndicator(true);
-        
-        chatHistory.push({'time':displayQueryData, 'role':'user','message':currentChatMessage})
-        // setChatHistory([...chatHistory,{'role':'user','message':currentChatMessage}])    
-        formJSON = {
-            // "loginId": yearsContext.loginId,
-            "loginId": 'CDAC/1/2345',
-            "userMessage":currentChatMessage
-        }
-    axios.post(`http://10.180.146.63:2888/claims-stats/sendchatmessage/`, formJSON)
-    .then(data => {
-
-        setDisplayActivityIndicator(false);
-        
-        
-        const replyNow = new Date()
-        const displayReplyData = ` ${getDoubleDigits(replyNow.getDate().toString())}/${getDoubleDigits((replyNow.getMonth() + 1).toString())}/${replyNow.getFullYear()} ${getDoubleDigits(replyNow.getHours().toString())}:${getDoubleDigits(replyNow.getMinutes().toString())}`;
-
-        // chatHistory.push({'role':'user','message':data.data.entities})
-        const botResponse = data.data.entities;
-        botResponse.time = displayReplyData;
-
-        const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-        
-        const renderNewItem = async() => {
-            const botMessage = botResponse.message
-            var constructingMessage = ''
-            var newHistory=''
-            for(let c in botMessage)
-            {
-                constructingMessage+=botMessage[c]
-                botResponse.message = constructingMessage
-            
-                newHistory = [...chatHistory, botResponse]
-                setChatHistory(newHistory);
-                // scrollToBottom();
-                await delay(50); 
-                newHistory = newHistory.slice(0,-1);
-            }
-        } 
-
-        renderNewItem();
-        
-
-    })
-    .catch(e => {
-            console.log('Error sending user message in chat')
-            console.log(e)
-            setDisplayActivityIndicator(false);
-    })}
-
-    // const chatrenderer = ({ item }) => (
-    //     <View style={styles.box}>
-    //         <Text style={item.role === 'user'? styles.boxUser :styles.boxModel}>{item.message}</Text>
-    //     </View>
     
-    // );
+    
+
+    // function inputMessageHandler(){
+
+    //     const queryNow = new Date()
+    //     const displayQueryData = `${getDoubleDigits(queryNow.getDate().toString())}/${getDoubleDigits((queryNow.getMonth() + 1).toString())}/${queryNow.getFullYear()} ${getDoubleDigits(queryNow.getHours().toString())}:${getDoubleDigits(queryNow.getMinutes().toString())}  `
+
+    //     setDisplayActivityIndicator(true);
+        
+    //     chatHistory.push({'time':displayQueryData, 'role':'user','message':currentChatMessage})  
+    //     formJSON = {
+    //         "loginId": 'CDAC/1/2345',
+    //         "userMessage":currentChatMessage
+    //     }
+    // axios.post(`http://10.180.146.63:2888/claims-stats/sendchatmessage/`, formJSON)
+    // .then(data => {
+
+    //     setDisplayActivityIndicator(false);
+        
+        
+    //     const replyNow = new Date()
+    //     const displayReplyData = ` ${getDoubleDigits(replyNow.getDate().toString())}/${getDoubleDigits((replyNow.getMonth() + 1).toString())}/${replyNow.getFullYear()} ${getDoubleDigits(replyNow.getHours().toString())}:${getDoubleDigits(replyNow.getMinutes().toString())}`;
+    //     const botResponse = data.data.entities;
+    //     botResponse.time = displayReplyData;
+
+    //     const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+        
+    //     const renderNewItem = async() => {
+    //         const botMessage = botResponse.message
+    //         var constructingMessage = ''
+    //         var newHistory=''
+    //         for(let c in botMessage)
+    //         {
+    //             constructingMessage+=botMessage[c]
+    //             botResponse.message = constructingMessage
+            
+    //             newHistory = [...chatHistory, botResponse]
+    //             setChatHistory(newHistory);
+    //             // scrollToBottom();
+    //             await delay(50); 
+    //             newHistory = newHistory.slice(0,-1);
+    //         }
+    //     } 
+
+    //     renderNewItem();
+        
+
+    // })
+    // .catch(e => {
+    //         console.log('Error sending user message in chat')
+    //         console.log(e)
+    //         setDisplayActivityIndicator(false);
+    // })}
 
     return(        
         <View style={styles.wrapper}>
@@ -144,32 +226,9 @@ const Koylamitrascreen = ({navigation}) => {
                         renderItem={
                             ({ item }) => (
                                 <View style={styles.box}>
-                                    <View style={item.role === 'user'? styles.userIcon :styles.modelIcon}>
-                                        {item.role === 'user'? <Chatrenderer role='user' time={item.time}/> :<Chatrenderer role='model' time={item.time}/>}
-                    
+                                    <View >
+                                        {item.type === 'plaintext'? <PlainTextView message={item.message} time={item.time}/> : <OptionButtonView history={chatHistory} seth={setChatHistory} valueref={valueRef} handler={item.handler} message={item.message} time={item.time}/>}
                                     </View>
-                                    <Text style={item.role === 'user'? styles.boxUser :styles.boxModel}>
-                                        {item.message}
-                                    </Text>
-                                    <Pressable 
-                                        style={styles.optionbutton}
-                                        onPress={inputMessageHandler}
-                                    >
-                                        <Text style={styles.buttonText}>Paragraph 1</Text>    
-                                    </Pressable>
-                                    <Pressable 
-                                        style={styles.optionbutton}
-                                        onPress={inputMessageHandler}
-                                    >
-                                        <Text style={styles.buttonText}>Paragraph 2</Text>    
-                                    </Pressable>
-                                    <Pressable 
-                                        style={styles.optionbutton}
-                                        onPress={inputMessageHandler}
-                                    >
-                                        <Text style={styles.buttonText}>Paragraph 3</Text>    
-                                    </Pressable>                    
-
                                 </View>
                             )
                         }
