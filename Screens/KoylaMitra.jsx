@@ -32,18 +32,21 @@ import { YearsOfServiceContext }  from '../store/context/serviceYears';
 
 import { useNavigation } from '@react-navigation/native';
 import { Feather } from '@expo/vector-icons';
+import { FontAwesome5 } from '@expo/vector-icons';
+import { ProvidentFundHandler} from '../components/PFBotComponents'
 // import { OptionButtonView, PlainTextView } from '../components/KoylamitraMenus';
 
-
-const OptionButtonView = (props) => 
-{
-    const getDoubleDigits = d =>
+const getDoubleDigits = d =>
     {
         if(d.length === 1)
             return '0'+d;  
         return d;
     }
 
+
+const OptionButtonView = (props) => 
+{
+    
     const PensionHandler = () => {
     
         const queryNow = new Date()
@@ -52,13 +55,16 @@ const OptionButtonView = (props) =>
     }
 
 
-    const ProvidentFundHandler = () => {
+    const ProvidentFundHandler = () => { 
     
         const queryNow = new Date()
         const displayQueryData = `${getDoubleDigits(queryNow.getDate().toString())}/${getDoubleDigits((queryNow.getMonth() + 1).toString())}/${queryNow.getFullYear()} ${getDoubleDigits(queryNow.getHours().toString())}:${getDoubleDigits(queryNow.getMinutes().toString())}  `
-
-        props.seth((prevC) => [...prevC, {'time':displayQueryData, 'type':'plaintext','message':'Provident Fund'}])
-    }
+    
+        props.seth((prevC) => [...prevC, {'time':displayQueryData, 'type':'plaintext','message':'Provident Fund','entity':'human'}])
+        props.seth((prevC) => [...prevC, {'handler':'pfopeningbalancehandler','time':displayQueryData, 'type':'option','message':'Opening Balance','entity':null}])
+        props.seth((prevC) => [...prevC, {'handler':'pfopeningbalancehandler','time':displayQueryData, 'type':'option','message':'Closing Balance','entity':null}])
+        props.seth((prevC) => [...prevC, {'handler':'pfopeningbalancehandler','time':displayQueryData, 'type':'option','message':'Rate Of Interest','entity':null}])
+    }   
 
     const AdvanceHandler = () => {
     
@@ -67,11 +73,25 @@ const OptionButtonView = (props) =>
 
         props.seth((prevC) => [...prevC, {'time':displayQueryData, 'type':'plaintext','message':'Advance'}])
     }
+
+
+    const PFOpeningBalanceHandler = () => {
+
+        const queryNow = new Date()
+        const displayQueryData = `${getDoubleDigits(queryNow.getDate().toString())}/${getDoubleDigits((queryNow.getMonth() + 1).toString())}/${queryNow.getFullYear()} ${getDoubleDigits(queryNow.getHours().toString())}:${getDoubleDigits(queryNow.getMinutes().toString())}  `
+
+        props.seth((prevC) => [...prevC, {'handler':'pfopeningbalancetexthandler', 'time':displayQueryData, 'type':'plaintext','message':'PF Opening Balance. Enter year','entity':'human'}])
+
+        props.setTextToType(true)
+    }
+
+    
     
     const handlerMaps = {
         'pfHandler':ProvidentFundHandler,
         'pensionHandler':PensionHandler,
-        'advanceHandler':AdvanceHandler               
+        'advanceHandler':AdvanceHandler,               
+        'pfopeningbalancehandler':PFOpeningBalanceHandler,
     }
 
 
@@ -88,17 +108,22 @@ const OptionButtonView = (props) =>
     const PlainTextView = (props) =>
     {
         return(
-            <Text style={styles.boxUser}>
+            <View>
+                <Text>
+                {props.entity === "agent"? <FontAwesome5 name="robot" size={24} color="black" />: null}
+                {props.entity === "human"? <MaterialCommunityIcons name="human" size={24} color="black" /> : null}
+                {props.time}
+                </Text>
+                
+                <Text style={styles.boxUser}>
                 {props.message}
-        </Text>
+            </Text>
+            </View>
+            
         )
         
     }
     
-
-
-
-
 
 const Koylamitrascreen = ({navigation}) => {
    
@@ -108,15 +133,15 @@ const Koylamitrascreen = ({navigation}) => {
         if(d.length === 1)
             return '0'+d;  
         return d;
-    }
-
+    }   
+   
 
     const now = new Date()
-    // const displayData = `${now.getDate()}/${now.getMonth() + 1}/${now.getFullYear()} ${getDoubleDigits(now.getHours().toString())}:${getDoubleDigits(now.getMinutes().toString())}`;
     
     const displayData = `  ${getDoubleDigits(now.getDate().toString())}/${getDoubleDigits((now.getMonth() + 1).toString())}/${now.getFullYear()} ${getDoubleDigits(now.getHours().toString())}:${getDoubleDigits(now.getMinutes().toString())}`
 
     const yearsContext = useContext(YearsOfServiceContext);
+    const [textToType, setTextToType] = useState(false)
     const [currentChatMessage, setCurrentChatMessage] = useState('')
     const [chatHistory, setChatHistory] = useState([
         {
@@ -148,10 +173,6 @@ const Koylamitrascreen = ({navigation}) => {
         },
 ]);
 
-        // useEffect(() => {  
-        //     }, [chatHistory]
-        // ); 
-
 
 
     const [displayActivityIndicator, setDisplayActivityIndicator] = useState(false)
@@ -163,61 +184,49 @@ const Koylamitrascreen = ({navigation}) => {
         }
     };
     
+    const PFOpeningBalanceTextHandler = () => {
+
+        const now = new Date()
+        const displayData = `  ${getDoubleDigits(now.getDate().toString())}/${getDoubleDigits((now.getMonth() + 1).toString())}/${now.getFullYear()} ${getDoubleDigits(now.getHours().toString())}:${getDoubleDigits(now.getMinutes().toString())}`
+
+        chatHistory.push({
+            time:displayData, 
+            type:'plaintext',
+            message:'Your PF opening balance for the year 2010 is Rs. 12000',
+            entity:'agent'
+        })
+
+        setTextToType(false)
+    }
+
+    const handlerMaps = {
+        'pfopeningbalancetexthandler': PFOpeningBalanceTextHandler
+    }
+
+    const Sendcomponent = (props) => {
+        return (
+        <View style={styles.messageInputContainer}>
+                <TextInput
+                    style={styles.messageInput}
+                    value={currentChatMessage}
+                    onChangeText = {value => {
+                        setCurrentChatMessage(value)
+                    }}
+                    placeholder="Enter your message......"
+                />
+
+                <Pressable 
+                    style={styles.button}
+                    onPress={handlerMaps[props.inputhandler]}
+                >
+                        <Text style={styles.buttonText}>Send</Text>
+                    
+                </Pressable> 
+                
+
+            </View>)
+    }
     
-    
-
-    // function inputMessageHandler(){
-
-    //     const queryNow = new Date()
-    //     const displayQueryData = `${getDoubleDigits(queryNow.getDate().toString())}/${getDoubleDigits((queryNow.getMonth() + 1).toString())}/${queryNow.getFullYear()} ${getDoubleDigits(queryNow.getHours().toString())}:${getDoubleDigits(queryNow.getMinutes().toString())}  `
-
-    //     setDisplayActivityIndicator(true);
-        
-    //     chatHistory.push({'time':displayQueryData, 'role':'user','message':currentChatMessage})  
-    //     formJSON = {
-    //         "loginId": 'CDAC/1/2345',
-    //         "userMessage":currentChatMessage
-    //     }
-    // axios.post(`http://10.180.146.63:2888/claims-stats/sendchatmessage/`, formJSON)
-    // .then(data => {
-
-    //     setDisplayActivityIndicator(false);
-        
-        
-    //     const replyNow = new Date()
-    //     const displayReplyData = ` ${getDoubleDigits(replyNow.getDate().toString())}/${getDoubleDigits((replyNow.getMonth() + 1).toString())}/${replyNow.getFullYear()} ${getDoubleDigits(replyNow.getHours().toString())}:${getDoubleDigits(replyNow.getMinutes().toString())}`;
-    //     const botResponse = data.data.entities;
-    //     botResponse.time = displayReplyData;
-
-    //     const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-        
-    //     const renderNewItem = async() => {
-    //         const botMessage = botResponse.message
-    //         var constructingMessage = ''
-    //         var newHistory=''
-    //         for(let c in botMessage)
-    //         {
-    //             constructingMessage+=botMessage[c]
-    //             botResponse.message = constructingMessage
-            
-    //             newHistory = [...chatHistory, botResponse]
-    //             setChatHistory(newHistory);
-    //             // scrollToBottom();
-    //             await delay(50); 
-    //             newHistory = newHistory.slice(0,-1);
-    //         }
-    //     } 
-
-    //     renderNewItem();
-        
-
-    // })
-    // .catch(e => {
-    //         console.log('Error sending user message in chat')
-    //         console.log(e)
-    //         setDisplayActivityIndicator(false);
-    // })}
-
     return(        
         <View style={styles.wrapper}>
             <View style={[styles.wrapper,{paddingVertical:20, paddingHorizontal:10}]}>
@@ -227,7 +236,7 @@ const Koylamitrascreen = ({navigation}) => {
                             ({ item }) => (
                                 <View style={styles.box}>
                                     <View >
-                                        {item.type === 'plaintext'? <PlainTextView message={item.message} time={item.time}/> : <OptionButtonView history={chatHistory} seth={setChatHistory} valueref={valueRef} handler={item.handler} message={item.message} time={item.time}/>}
+                                        {item.type === 'plaintext'? <PlainTextView message={item.message} time={item.time} entity={item.entity}/> : <OptionButtonView history={chatHistory} seth={setChatHistory} valueref={valueRef} handler={item.handler} message={item.message} time={item.time} entity={item.entity} setTextToType={setTextToType}/>}
                                     </View>
                                 </View>
                             )
@@ -249,36 +258,11 @@ const Koylamitrascreen = ({navigation}) => {
                 </ActivityIndicator>
             </View>
             
+
             {/* For input text and send  */}
-            {/* <View style={styles.messageInputContainer}>
-                
-                
-                <TextInput
-                    style={styles.messageInput}
-                    value={currentChatMessage}
-                    onChangeText = {value => {
-                        setCurrentChatMessage(value)
-                    }}
-                    placeholder="Enter your message......"
-                />
 
-                <Pressable 
-                    style={styles.buttonMic}
-                    // onPress={inputMessageHandler}
-                >
-                    <Text style={styles.buttonText}><Feather name="mic" size={24} color="black" /></Text>
-                    
-                </Pressable>
-                <Pressable 
-                    style={styles.button}
-                    onPress={inputMessageHandler}
-                >
-                        <Text style={styles.buttonText}>Send</Text>
-                    
-                </Pressable>
-                
-
-            </View> */}
+            {textToType ? <Sendcomponent inputhandler={chatHistory.at(-1)['handler']}/>: null} 
+             
         </View>
         
     )
