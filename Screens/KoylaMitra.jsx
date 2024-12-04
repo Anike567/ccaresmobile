@@ -84,6 +84,41 @@ const Koylamitrascreen = ({navigation}) => {
 ]);
 
 
+    const mainMenuHandler = () => {
+
+        setChatHistory((prevC) => [...prevC, 
+            {
+                time:displayData, 
+                type:'plaintext',
+                message:'Back to Main Menu',
+                entity:'agent'
+            },
+            {
+                time:displayData, 
+                type:'option',
+                message:'Provident Fund',
+                handler: 'pfHandler',
+                entity: null
+            },
+            {
+                time:displayData, 
+                type:'option',
+                message:'Pension',
+                handler: 'pensionHandler',
+                entity: null
+            },
+            {
+                time:displayData, 
+                type:'option',
+                message:'Advance',
+                handler: 'advanceHandler',
+                entity: null
+            },
+        ])
+
+    }
+
+
 
     const [displayActivityIndicator, setDisplayActivityIndicator] = useState(false)
     
@@ -115,6 +150,8 @@ const Koylamitrascreen = ({navigation}) => {
             setChatHistory((prevC) => [...prevC, {'handler':'pfopeningbalancehandler','time':displayQueryData, 'type':'option','message':'Opening Balance','entity':null}])
             setChatHistory((prevC) => [...prevC, {'handler':'pfopeningbalancehandler','time':displayQueryData, 'type':'option','message':'Closing Balance','entity':null}])
             setChatHistory((prevC) => [...prevC, {'handler':'pfopeningbalancehandler','time':displayQueryData, 'type':'option','message':'Rate Of Interest','entity':null}])
+            setChatHistory((prevC) => [...prevC, {'handler':'mainmenuhandler','time':displayQueryData, 'type':'option','message':'Main Menu','entity':null}])
+           
         }   
     
         const AdvanceHandler = () => {
@@ -143,6 +180,7 @@ const Koylamitrascreen = ({navigation}) => {
             'pensionHandler':PensionHandler,
             'advanceHandler':AdvanceHandler,               
             'pfopeningbalancehandler':PFOpeningBalanceHandler,
+            'mainmenuhandler': mainMenuHandler
         }
     
     
