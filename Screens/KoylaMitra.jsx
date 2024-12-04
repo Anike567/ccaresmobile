@@ -44,100 +44,10 @@ const getDoubleDigits = d =>
     }
 
 
-const OptionButtonView = (props) => 
-{
-    
-    const PensionHandler = () => {
-    
-        const queryNow = new Date()
-        const displayQueryData = `${getDoubleDigits(queryNow.getDate().toString())}/${getDoubleDigits((queryNow.getMonth() + 1).toString())}/${queryNow.getFullYear()} ${getDoubleDigits(queryNow.getHours().toString())}:${getDoubleDigits(queryNow.getMinutes().toString())}  `
-        props.seth((prevC) => [...prevC, {'time':displayQueryData, 'type':'plaintext','message':'Pension'}])
-    }
-
-
-    const ProvidentFundHandler = () => { 
-    
-        const queryNow = new Date()
-        const displayQueryData = `${getDoubleDigits(queryNow.getDate().toString())}/${getDoubleDigits((queryNow.getMonth() + 1).toString())}/${queryNow.getFullYear()} ${getDoubleDigits(queryNow.getHours().toString())}:${getDoubleDigits(queryNow.getMinutes().toString())}  `
-    
-        props.seth((prevC) => [...prevC, {'time':displayQueryData, 'type':'plaintext','message':'Provident Fund','entity':'human'}])
-        props.seth((prevC) => [...prevC, {'handler':'pfopeningbalancehandler','time':displayQueryData, 'type':'option','message':'Opening Balance','entity':null}])
-        props.seth((prevC) => [...prevC, {'handler':'pfopeningbalancehandler','time':displayQueryData, 'type':'option','message':'Closing Balance','entity':null}])
-        props.seth((prevC) => [...prevC, {'handler':'pfopeningbalancehandler','time':displayQueryData, 'type':'option','message':'Rate Of Interest','entity':null}])
-    }   
-
-    const AdvanceHandler = () => {
-    
-        const queryNow = new Date()
-        const displayQueryData = `${getDoubleDigits(queryNow.getDate().toString())}/${getDoubleDigits((queryNow.getMonth() + 1).toString())}/${queryNow.getFullYear()} ${getDoubleDigits(queryNow.getHours().toString())}:${getDoubleDigits(queryNow.getMinutes().toString())}  `
-
-        props.seth((prevC) => [...prevC, {'time':displayQueryData, 'type':'plaintext','message':'Advance'}])
-    }
-
-
-    const PFOpeningBalanceHandler = () => {
-
-        const queryNow = new Date()
-        const displayQueryData = `${getDoubleDigits(queryNow.getDate().toString())}/${getDoubleDigits((queryNow.getMonth() + 1).toString())}/${queryNow.getFullYear()} ${getDoubleDigits(queryNow.getHours().toString())}:${getDoubleDigits(queryNow.getMinutes().toString())}  `
-
-        props.seth((prevC) => [...prevC, {'handler':'pfopeningbalancetexthandler', 'time':displayQueryData, 'type':'plaintext','message':'PF Opening Balance. Enter year','entity':'human'}])
-
-        props.setTextToType(true)
-    }
-
-    
-    
-    const handlerMaps = {
-        'pfHandler':ProvidentFundHandler,
-        'pensionHandler':PensionHandler,
-        'advanceHandler':AdvanceHandler,               
-        'pfopeningbalancehandler':PFOpeningBalanceHandler,
-    }
-
-
-        return(
-            <Pressable 
-                style={styles.optionbutton}
-                onPress={handlerMaps[props.handler]}
-            >
-                <Text style={styles.buttonText}>{props.message}</Text>    
-            </Pressable>
-        )
-    }
-    
-    const PlainTextView = (props) =>
-    {
-        return(
-            <View>
-                <Text>
-                {props.entity === "agent"? <FontAwesome5 name="robot" size={24} color="black" />: null}
-                {props.entity === "human"? <MaterialCommunityIcons name="human" size={24} color="black" /> : null}
-                {props.time}
-                </Text>
-                
-                <Text style={styles.boxUser}>
-                {props.message}
-            </Text>
-            </View>
-            
-        )
-        
-    }
-    
-
 const Koylamitrascreen = ({navigation}) => {
    
-    const valueRef = useRef(0);
-
-    function getDoubleDigits(d){
-        if(d.length === 1)
-            return '0'+d;  
-        return d;
-    }   
-   
-
+    const valueRef = useRef(0);   
     const now = new Date()
-    
     const displayData = `  ${getDoubleDigits(now.getDate().toString())}/${getDoubleDigits((now.getMonth() + 1).toString())}/${now.getFullYear()} ${getDoubleDigits(now.getHours().toString())}:${getDoubleDigits(now.getMinutes().toString())}`
 
     const yearsContext = useContext(YearsOfServiceContext);
@@ -184,6 +94,86 @@ const Koylamitrascreen = ({navigation}) => {
         }
     };
     
+////////////////////////////////////// Message Display Components ///////////////////////////
+    const OptionButtonView = (props) => 
+    {
+        
+        const PensionHandler = () => {
+        
+            const queryNow = new Date()
+            const displayQueryData = `${getDoubleDigits(queryNow.getDate().toString())}/${getDoubleDigits((queryNow.getMonth() + 1).toString())}/${queryNow.getFullYear()} ${getDoubleDigits(queryNow.getHours().toString())}:${getDoubleDigits(queryNow.getMinutes().toString())}  `
+            setChatHistory((prevC) => [...prevC, {'time':displayQueryData, 'type':'plaintext','message':'Pension'}])
+        }
+    
+    
+        const ProvidentFundHandler = () => { 
+        
+            const queryNow = new Date()
+            const displayQueryData = `${getDoubleDigits(queryNow.getDate().toString())}/${getDoubleDigits((queryNow.getMonth() + 1).toString())}/${queryNow.getFullYear()} ${getDoubleDigits(queryNow.getHours().toString())}:${getDoubleDigits(queryNow.getMinutes().toString())}  `
+        
+            setChatHistory((prevC) => [...prevC, {'time':displayQueryData, 'type':'plaintext','message':'Provident Fund','entity':'human'}])
+            setChatHistory((prevC) => [...prevC, {'handler':'pfopeningbalancehandler','time':displayQueryData, 'type':'option','message':'Opening Balance','entity':null}])
+            setChatHistory((prevC) => [...prevC, {'handler':'pfopeningbalancehandler','time':displayQueryData, 'type':'option','message':'Closing Balance','entity':null}])
+            setChatHistory((prevC) => [...prevC, {'handler':'pfopeningbalancehandler','time':displayQueryData, 'type':'option','message':'Rate Of Interest','entity':null}])
+        }   
+    
+        const AdvanceHandler = () => {
+        
+            const queryNow = new Date()
+            const displayQueryData = `${getDoubleDigits(queryNow.getDate().toString())}/${getDoubleDigits((queryNow.getMonth() + 1).toString())}/${queryNow.getFullYear()} ${getDoubleDigits(queryNow.getHours().toString())}:${getDoubleDigits(queryNow.getMinutes().toString())}  `
+    
+            setChatHistory((prevC) => [...prevC, {'time':displayQueryData, 'type':'plaintext','message':'Advance'}])
+        }
+    
+        const PFOpeningBalanceHandler = () => {
+    
+            const queryNow = new Date()
+            const displayQueryData = `${getDoubleDigits(queryNow.getDate().toString())}/${getDoubleDigits((queryNow.getMonth() + 1).toString())}/${queryNow.getFullYear()} ${getDoubleDigits(queryNow.getHours().toString())}:${getDoubleDigits(queryNow.getMinutes().toString())}  `
+    
+            setChatHistory((prevC) => [...prevC, {'handler':'pfopeningbalancetexthandler', 'time':displayQueryData, 'type':'plaintext','message':'PF Opening Balance','entity':'human'}])
+            setChatHistory((prevC) => [...prevC, {'handler':'pfopeningbalancetexthandler', 'time':displayQueryData, 'type':'plaintext','message':'Enter year','entity':'agent'}])
+    
+            setTextToType(true)
+        }
+    
+        
+        
+        const handlerMaps = {
+            'pfHandler':ProvidentFundHandler,
+            'pensionHandler':PensionHandler,
+            'advanceHandler':AdvanceHandler,               
+            'pfopeningbalancehandler':PFOpeningBalanceHandler,
+        }
+    
+    
+            return(
+                <Pressable 
+                    style={styles.optionbutton}
+                    onPress={handlerMaps[props.handler]}
+                >
+                    <Text style={styles.buttonText}>{props.message}</Text>    
+                </Pressable>
+            )
+        }
+        
+        const PlainTextView = (props) =>
+        {
+            return(
+                <View>
+                    {props.entity === "agent"? <View style={{flexDirection: 'row'}}><FontAwesome5 name="robot" size={24} color="black" /><Text>{props.time}</Text></View>: null}
+                    {props.entity === "human"? <View style={{flexDirection: 'row', justifyContent:'flex-end'}}><Text>{props.time}</Text><MaterialCommunityIcons name="human" size={24} color="black" /></View> : null}
+                   
+                    <Text style={props.entity === 'agent'? styles.boxAgent:styles.boxUser}>
+                    {props.message}
+                </Text>
+                </View>
+                
+            )
+            
+        }
+        
+////////////////////////////////////// Message Display Components ///////////////////////////
+
     const PFOpeningBalanceTextHandler = () => {
 
         const now = new Date()
@@ -192,9 +182,19 @@ const Koylamitrascreen = ({navigation}) => {
         chatHistory.push({
             time:displayData, 
             type:'plaintext',
+            message:textToType,
+            entity:'human'
+        },
+        {
+            time:displayData, 
+            type:'plaintext',
             message:'Your PF opening balance for the year 2010 is Rs. 12000',
             entity:'agent'
-        })
+        },
+        {'handler':'pfopeningbalancehandler','time':displayData, 'type':'option','message':'Opening Balance','entity':null},
+        {'handler':'pfopeningbalancehandler','time':displayData, 'type':'option','message':'Closing Balance','entity':null},
+        {'handler':'pfopeningbalancehandler','time':displayData, 'type':'option','message':'Rate Of Interest','entity':null}
+    )
 
         setTextToType(false)
     }
@@ -208,9 +208,9 @@ const Koylamitrascreen = ({navigation}) => {
         <View style={styles.messageInputContainer}>
                 <TextInput
                     style={styles.messageInput}
-                    value={currentChatMessage}
+                    value={textToType}
                     onChangeText = {value => {
-                        setCurrentChatMessage(value)
+                        setTextToType(value)
                     }}
                     placeholder="Enter your message......"
                 />
@@ -298,7 +298,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#6D28D9', // Background color for the button
         paddingVertical: 5, // Vertical padding for the button
         paddingHorizontal: 20, // Horizontal padding for the button
-        borderRadius: 5, // Rounded corners for the button
+        borderRadius: 2, // Rounded corners for the button
         width:'100%'
     },
     button:{
@@ -327,20 +327,23 @@ const styles = StyleSheet.create({
         // Elevation property for Android
         // elevation: 5,
     },
-    boxUser:{
-        backgroundColor: '#301934',
-        color:'#fff',
+    boxAgent:{
+        backgroundColor: '#e6e6fa',
+        color:'#000',
         width:'100%',
         // height:'30%',
         padding:7,
-        borderRadius:2
+        borderRadius:2,
+        borderWidth: 1
     },
-    boxModel:{
+    boxUser:{
         backgroundColor: '#CBC3E3',
         width:'100%',
         // height:'30%',
         padding:7,
-        borderRadius:2
+        borderRadius:2,
+        borderWidth: 1,
+        borderColor: '#00008b'
     },
     box: {
         marginBottom:3
