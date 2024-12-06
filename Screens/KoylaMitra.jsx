@@ -52,40 +52,65 @@ const Koylamitrascreen = ({navigation}) => {
 
     const yearsContext = useContext(YearsOfServiceContext);
     const [textToType, setTextToType] = useState(false)
+    const [sendText, setSendText] = useState('')
     const [currentChatMessage, setCurrentChatMessage] = useState('')
     const [chatHistory, setChatHistory] = useState([
         {
             time:displayData, 
             type:'plaintext',
             message:'Hello, \nI am Koyla Mitra.\nHow can I help you ?',
-            entity:'agent'
+            entity:'agent',
+            disabled: false
         },
         {
             time:displayData, 
             type:'option',
             message:'Provident Fund',
             handler: 'pfHandler',
-            entity: null
+            entity: null,
+            disabled: false
         },
         {
             time:displayData, 
             type:'option',
             message:'Pension',
             handler: 'pensionHandler',
-            entity: null
+            entity: null,
+            disabled: false
         },
         {
             time:displayData, 
             type:'option',
             message:'Advance',
             handler: 'advanceHandler',
-            entity: null
+            entity: null,
+            disabled: false
         },
 ]);
+
+    const disablePastInteractionsButtons = () => {
+
+        var chatHistoryContainer = []
+        for (let i = 0; i < chatHistory.length; i++) {
+            chatHistoryContainer.push(chatHistory[i])
+        }
+
+        setChatHistory([])
+        for (let i = 0; i < chatHistoryContainer.length; i++) {
+            if(chatHistoryContainer[i]['type'] === 'option'){
+                chatHistoryContainer[i]['disabled'] = true
+            }
+            setChatHistory((prevC) => [...prevC,chatHistory[i]])
+        }
+
+        
+    }
+
 
 
     const mainMenuHandler = () => {
 
+        disablePastInteractionsButtons()
         setChatHistory((prevC) => [...prevC, 
             {
                 time:displayData, 
@@ -98,21 +123,24 @@ const Koylamitrascreen = ({navigation}) => {
                 type:'option',
                 message:'Provident Fund',
                 handler: 'pfHandler',
-                entity: null
+                entity: null,
+                disabled: false
             },
             {
                 time:displayData, 
                 type:'option',
                 message:'Pension',
                 handler: 'pensionHandler',
-                entity: null
+                entity: null,
+                disabled: false
             },
             {
                 time:displayData, 
                 type:'option',
                 message:'Advance',
                 handler: 'advanceHandler',
-                entity: null
+                entity: null,
+                disabled: false
             },
         ])
 
@@ -145,12 +173,13 @@ const Koylamitrascreen = ({navigation}) => {
         
             const queryNow = new Date()
             const displayQueryData = `${getDoubleDigits(queryNow.getDate().toString())}/${getDoubleDigits((queryNow.getMonth() + 1).toString())}/${queryNow.getFullYear()} ${getDoubleDigits(queryNow.getHours().toString())}:${getDoubleDigits(queryNow.getMinutes().toString())}  `
-        
+            
+            disablePastInteractionsButtons()
             setChatHistory((prevC) => [...prevC, {'time':displayQueryData, 'type':'plaintext','message':'Provident Fund','entity':'human'}])
-            setChatHistory((prevC) => [...prevC, {'handler':'pfopeningbalancehandler','time':displayQueryData, 'type':'option','message':'Opening Balance','entity':null}])
-            setChatHistory((prevC) => [...prevC, {'handler':'pfopeningbalancehandler','time':displayQueryData, 'type':'option','message':'Closing Balance','entity':null}])
-            setChatHistory((prevC) => [...prevC, {'handler':'pfopeningbalancehandler','time':displayQueryData, 'type':'option','message':'Rate Of Interest','entity':null}])
-            setChatHistory((prevC) => [...prevC, {'handler':'mainmenuhandler','time':displayQueryData, 'type':'option','message':'Main Menu','entity':null}])
+            setChatHistory((prevC) => [...prevC, {'handler':'pfopeningbalancehandler','time':displayQueryData, 'type':'option','message':'Opening Balance','entity':null, disabled:false}])
+            setChatHistory((prevC) => [...prevC, {'handler':'pfopeningbalancehandler','time':displayQueryData, 'type':'option','message':'Closing Balance','entity':null, disabled:false}])
+            setChatHistory((prevC) => [...prevC, {'handler':'pfopeningbalancehandler','time':displayQueryData, 'type':'option','message':'Rate Of Interest','entity':null, disabled:false}])
+            setChatHistory((prevC) => [...prevC, {'handler':'mainmenuhandler','time':displayQueryData, 'type':'option','message':'Main Menu','entity':null, disabled:false}])
            
         }   
     
@@ -167,6 +196,7 @@ const Koylamitrascreen = ({navigation}) => {
             const queryNow = new Date()
             const displayQueryData = `${getDoubleDigits(queryNow.getDate().toString())}/${getDoubleDigits((queryNow.getMonth() + 1).toString())}/${queryNow.getFullYear()} ${getDoubleDigits(queryNow.getHours().toString())}:${getDoubleDigits(queryNow.getMinutes().toString())}  `
     
+            disablePastInteractionsButtons()
             setChatHistory((prevC) => [...prevC, {'handler':'pfopeningbalancetexthandler', 'time':displayQueryData, 'type':'plaintext','message':'PF Opening Balance','entity':'human'}])
             setChatHistory((prevC) => [...prevC, {'handler':'pfopeningbalancetexthandler', 'time':displayQueryData, 'type':'plaintext','message':'Enter year','entity':'agent'}])
     
@@ -186,10 +216,11 @@ const Koylamitrascreen = ({navigation}) => {
     
             return(
                 <Pressable 
-                    style={styles.optionbutton}
+                    style={props.disabled === true? styles.disabledoptionbutton:styles.enabledoptionbutton}
                     onPress={handlerMaps[props.handler]}
+                    disabled={props.disabled}
                 >
-                    <Text style={styles.buttonText}>{props.message}</Text>    
+                    <Text style={props.disabled === true?{color:"#6D28D9"}:{color:"white"}}>{props.message}</Text>    
                 </Pressable>
             )
         }
@@ -217,10 +248,11 @@ const Koylamitrascreen = ({navigation}) => {
         const now = new Date()
         const displayData = `  ${getDoubleDigits(now.getDate().toString())}/${getDoubleDigits((now.getMonth() + 1).toString())}/${now.getFullYear()} ${getDoubleDigits(now.getHours().toString())}:${getDoubleDigits(now.getMinutes().toString())}`
 
-        chatHistory.push({
+        disablePastInteractionsButtons()
+        var dataToPush = [{
             time:displayData, 
             type:'plaintext',
-            message:textToType,
+            message:sendText,
             entity:'human'
         },
         {
@@ -229,11 +261,13 @@ const Koylamitrascreen = ({navigation}) => {
             message:'Your PF opening balance for the year 2010 is Rs. 12000',
             entity:'agent'
         },
-        {'handler':'pfopeningbalancehandler','time':displayData, 'type':'option','message':'Opening Balance','entity':null},
-        {'handler':'pfopeningbalancehandler','time':displayData, 'type':'option','message':'Closing Balance','entity':null},
-        {'handler':'pfopeningbalancehandler','time':displayData, 'type':'option','message':'Rate Of Interest','entity':null}
-    )
+        {'handler':'pfopeningbalancehandler','time':displayData, 'type':'option','message':'Opening Balance','entity':null, disabled:false},
+        {'handler':'pfopeningbalancehandler','time':displayData, 'type':'option','message':'Closing Balance','entity':null, disabled:false},
+        {'handler':'pfopeningbalancehandler','time':displayData, 'type':'option','message':'Rate Of Interest','entity':null, disabled:false},
+        {'handler':'mainmenuhandler','time':displayData, 'type':'option','message':'Main Menu','entity':null, disabled:false}
+        ]
 
+        dataToPush.forEach(i => setChatHistory(prevC => [...prevC, i]))
         setTextToType(false)
     }
 
@@ -246,11 +280,10 @@ const Koylamitrascreen = ({navigation}) => {
         <View style={styles.messageInputContainer}>
                 <TextInput
                     style={styles.messageInput}
-                    value={textToType}
-                    onChangeText = {value => {
-                        setTextToType(value)
-                    }}
-                    placeholder="Enter your message......"
+                    value={sendText}
+                    onChangeText = {setSendText}
+                    placeholder="Please enter input here....."
+                    keyboardType='numeric'
                 />
 
                 <Pressable 
@@ -274,7 +307,7 @@ const Koylamitrascreen = ({navigation}) => {
                             ({ item }) => (
                                 <View style={styles.box}>
                                     <View >
-                                        {item.type === 'plaintext'? <PlainTextView message={item.message} time={item.time} entity={item.entity}/> : <OptionButtonView history={chatHistory} seth={setChatHistory} valueref={valueRef} handler={item.handler} message={item.message} time={item.time} entity={item.entity} setTextToType={setTextToType}/>}
+                                        {item.type === 'plaintext'? <PlainTextView message={item.message} time={item.time} entity={item.entity}/> : <OptionButtonView history={chatHistory} seth={setChatHistory} valueref={valueRef} handler={item.handler} message={item.message} time={item.time} entity={item.entity} setTextToType={setTextToType} disabled={item.disabled}/>}
                                     </View>
                                 </View>
                             )
@@ -330,7 +363,19 @@ const styles = StyleSheet.create({
         paddingVertical: 5, // Add vertical padding inside the input
         marginRight: 10, // Add some space between the input and the button
     },
-    optionbutton:{
+    disabledoptionbutton:{
+        alignItems:'center',
+        marginVertical: 1,
+        backgroundColor: '#D3D3D3', // Background color for the button
+        color: 'black',
+        paddingVertical: 5, // Vertical padding for the button
+        paddingHorizontal: 20, // Horizontal padding for the button
+        borderRadius: 1, // Rounded corners for the button
+        width:'100%',
+        borderColor: 'black',
+        borderWidth: 1
+    },
+    enabledoptionbutton:{
         alignItems:'center',
         marginVertical: 1,
         backgroundColor: '#6D28D9', // Background color for the button

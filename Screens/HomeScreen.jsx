@@ -53,10 +53,10 @@ const Homescreen = ({navigation}) => {
     {
         navigation.navigate('Usermanualdrawer');
     }
-    function ccarescamhandler()
-    {
-        navigation.navigate('Ccarescam');
-    }
+    // function ccarescamhandler()
+    // {
+    //     navigation.navigate('Ccarescam');
+    // }
     function ccaresgpthandler()
     {
         navigation.navigate('Ccaresgpt');

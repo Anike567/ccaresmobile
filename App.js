@@ -24,7 +24,7 @@ import Memberdashboard from './Screens/MemberDashboard';
 import Appendix from './Screens/Appendix';
 import Grievance from './Screens/Grievance';
 import Enrolmentotpscreen from './Screens/EnrolmentOtp';
-import Ccarescamscreen from './Screens/Ccarescam';
+// import Ccarescamscreen from './Screens/Ccarescam';
 import Ccaresgptscreen from './Screens/Ccaresgpt';
 import Koylamitrascreen from './Screens/KoylaMitra';
 import { Text, TouchableNativeFeedback, TouchableOpacity, View } from 'react-native';
@@ -366,16 +366,6 @@ return (
         }
           
           }
-      />
-       <Stack.Screen 
-        name="Ccarescam" 
-        key="Ccarescam"
-        component={Ccarescamscreen}  
-        options={{
-          title:'Ccarescam',
-          headerTitleAlign: 'center',
-          
-      }}
       />
       <Stack.Screen 
         name="Ccaresgpt" 
