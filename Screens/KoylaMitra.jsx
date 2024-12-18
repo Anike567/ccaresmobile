@@ -73,19 +73,27 @@ const Koylamitrascreen = ({navigation}) => {
         {
             time:displayData, 
             type:'option',
-            message:'Pension',
-            handler: 'pensionHandler',
+            message:'Claims',
+            handler: 'claimCategoryHandler',
             entity: null,
             disabled: false
-        },
-        {
-            time:displayData, 
-            type:'option',
-            message:'Advance',
-            handler: 'advanceHandler',
-            entity: null,
-            disabled: false
-        },
+        }
+        // {
+        //     time:displayData, 
+        //     type:'option',
+        //     message:'Pension',
+        //     handler: 'pensionHandler',
+        //     entity: null,
+        //     disabled: false
+        // },
+        // {
+        //     time:displayData, 
+        //     type:'option',
+        //     message:'Advance',
+        //     handler: 'advanceHandler',
+        //     entity: null,
+        //     disabled: false
+        // },
 ]);
 
     const disablePastInteractionsButtons = () => {
@@ -129,19 +137,19 @@ const Koylamitrascreen = ({navigation}) => {
             {
                 time:displayData, 
                 type:'option',
-                message:'Pension',
-                handler: 'pensionHandler',
+                message:'Claims',
+                handler: 'claimCategoryHandler',
                 entity: null,
                 disabled: false
             },
-            {
-                time:displayData, 
-                type:'option',
-                message:'Advance',
-                handler: 'advanceHandler',
-                entity: null,
-                disabled: false
-            },
+            // {
+            //     time:displayData, 
+            //     type:'option',
+            //     message:'Advance',
+            //     handler: 'advanceHandler',
+            //     entity: null,
+            //     disabled: false
+            // },
         ])
 
     }
@@ -177,8 +185,8 @@ const Koylamitrascreen = ({navigation}) => {
             disablePastInteractionsButtons()
             setChatHistory((prevC) => [...prevC, {'time':displayQueryData, 'type':'plaintext','message':'Provident Fund','entity':'human'}])
             setChatHistory((prevC) => [...prevC, {'handler':'pfopeningbalancehandler','time':displayQueryData, 'type':'option','message':'Opening Balance','entity':null, disabled:false}])
-            setChatHistory((prevC) => [...prevC, {'handler':'pfopeningbalancehandler','time':displayQueryData, 'type':'option','message':'Closing Balance','entity':null, disabled:false}])
-            setChatHistory((prevC) => [...prevC, {'handler':'pfopeningbalancehandler','time':displayQueryData, 'type':'option','message':'Rate Of Interest','entity':null, disabled:false}])
+            setChatHistory((prevC) => [...prevC, {'handler':'pfclosingbalancehandler','time':displayQueryData, 'type':'option','message':'Closing Balance','entity':null, disabled:false}])
+            // setChatHistory((prevC) => [...prevC, {'handler':'pfopeningbalancehandler','time':displayQueryData, 'type':'option','message':'Rate Of Interest','entity':null, disabled:false}])
             setChatHistory((prevC) => [...prevC, {'handler':'mainmenuhandler','time':displayQueryData, 'type':'option','message':'Main Menu','entity':null, disabled:false}])
            
         }   
@@ -202,14 +210,126 @@ const Koylamitrascreen = ({navigation}) => {
     
             setTextToType(true)
         }
+
+        const PFClosingBalanceHandler = () => {
     
-        
+            const queryNow = new Date()
+            const displayQueryData = `${getDoubleDigits(queryNow.getDate().toString())}/${getDoubleDigits((queryNow.getMonth() + 1).toString())}/${queryNow.getFullYear()} ${getDoubleDigits(queryNow.getHours().toString())}:${getDoubleDigits(queryNow.getMinutes().toString())}  `
+    
+            disablePastInteractionsButtons()
+            setChatHistory((prevC) => [...prevC, {'handler':'pfclosingbalancetexthandler', 'time':displayQueryData, 'type':'plaintext','message':'PF Opening Balance','entity':'human'}])
+            setChatHistory((prevC) => [...prevC, {'handler':'pfclosingbalancetexthandler', 'time':displayQueryData, 'type':'plaintext','message':'Enter year','entity':'agent'}])
+    
+            setTextToType(true)
+        }
+
+        const ClaimCategoryHandler = () => {
+    
+            const queryNow = new Date()
+            const displayQueryData = `${getDoubleDigits(queryNow.getDate().toString())}/${getDoubleDigits((queryNow.getMonth() + 1).toString())}/${queryNow.getFullYear()} ${getDoubleDigits(queryNow.getHours().toString())}:${getDoubleDigits(queryNow.getMinutes().toString())}  `
+    
+            disablePastInteractionsButtons()
+            setChatHistory((prevC) => [...prevC, {'handler':'pfclosingbalancetexthandler', 'time':displayQueryData, 'type':'plaintext','message':'Claims','entity':'human'}])
+            setChatHistory((prevC) => [...prevC, {'handler':'pfclaimshandler','time':displayData, 'type':'option','message':'PF Claims','entity':null, disabled:false}])
+            setChatHistory((prevC) => [...prevC, {'handler':'pensionclaimshandler','time':displayData, 'type':'option','message':'Pension Claims','entity':null, disabled:false}])
+            setChatHistory((prevC) => [...prevC, {'handler':'advanceclaimshandler','time':displayData, 'type':'option','message':'Advance Claims','entity':null, disabled:false}])
+            setChatHistory((prevC) => [...prevC, {'handler':'mainmenuhandler','time':displayData, 'type':'option','message':'Main Menu','entity':null, disabled:false}])
+        }
+    
+        const PFClaimsHandler = () => {
+
+            formJSON = {
+                "cno":'KGM/47/1100',
+            }
+            
+            axios.post(`http://10.180.146.63:2888/claims-stats/getPfClaims/`, formJSON)
+            .then(data => {
+
+                var displayResponse = data.data.response;
+                
+                disablePastInteractionsButtons()
+                setChatHistory((prevC) => [...prevC, {'handler':'pfclosingbalancetexthandler', 'time':displayData, 'type':'plaintext','message':'PF Claims','entity':'human'}])
+                setChatHistory((prevC) => [...prevC,{time:displayData, type:'plaintext',message: displayResponse,entity:'agent'}])
+                setChatHistory((prevC) => [...prevC, {'handler':'pfclaimshandler','time':displayData, 'type':'option','message':'PF Claims','entity':null, disabled:false}])
+                setChatHistory((prevC) => [...prevC, {'handler':'pensionclaimshandler','time':displayData, 'type':'option','message':'Pension Claims','entity':null, disabled:false}])
+                setChatHistory((prevC) => [...prevC, {'handler':'advanceclaimshandler','time':displayData, 'type':'option','message':'Advance Claims','entity':null, disabled:false}])
+                setChatHistory((prevC) => [...prevC, {'handler':'mainmenuhandler','time':displayData, 'type':'option','message':'Main Menu','entity':null, disabled:false}])
+            })
+            .catch(e => {
+                console.log(e)
+                renderWithRespone("Something went wrong")
+                // setDisplayActivityIndicator(false);
+            })
+
+        }
+
+        const PensionClaimsHandler = () => {
+
+            formJSON = {
+                "cno":'NGP/37/2188',
+            }
+            
+            axios.post(`http://10.180.146.63:2888/claims-stats/getPensionClaims/`, formJSON)
+            .then(data => {
+
+                var displayResponse = data.data.response;
+                
+                disablePastInteractionsButtons()
+                setChatHistory((prevC) => [...prevC, {'handler':'pfclosingbalancetexthandler', 'time':displayData, 'type':'plaintext','message':'Pension Claims','entity':'human'}])
+                setChatHistory((prevC) => [...prevC,{time:displayData, type:'plaintext',message: displayResponse,entity:'agent'}])
+                setChatHistory((prevC) => [...prevC, {'handler':'pfclaimshandler','time':displayData, 'type':'option','message':'PF Claims','entity':null, disabled:false}])
+                setChatHistory((prevC) => [...prevC, {'handler':'pensionclaimshandler','time':displayData, 'type':'option','message':'Pension Claims','entity':null, disabled:false}])
+                setChatHistory((prevC) => [...prevC, {'handler':'advanceclaimshandler','time':displayData, 'type':'option','message':'Advance Claims','entity':null, disabled:false}])
+                setChatHistory((prevC) => [...prevC, {'handler':'mainmenuhandler','time':displayData, 'type':'option','message':'Main Menu','entity':null, disabled:false}])
+            })
+            .catch(e => {
+                console.log(e)
+                renderWithRespone("Something went wrong")
+                // setDisplayActivityIndicator(false);
+            })
+
+        }
+
+        const AdvanceClaimsHandler = () => {
+
+            formJSON = {
+                "cno":'JBP/68/752',
+            }
+            
+            axios.post(`http://10.180.146.63:2888/claims-stats/getAdvanceClaims/`, formJSON)
+            .then(data => {
+
+                var displayResponse = data.data.response;
+                
+                disablePastInteractionsButtons()
+                setChatHistory((prevC) => [...prevC, {'handler':'pfclosingbalancetexthandler', 'time':displayData, 'type':'plaintext','message':'Advance Claims','entity':'human'}])
+                setChatHistory((prevC) => [...prevC,{time:displayData, type:'plaintext',message: displayResponse,entity:'agent'}])
+                setChatHistory((prevC) => [...prevC, {'handler':'pfclaimshandler','time':displayData, 'type':'option','message':'PF Claims','entity':null, disabled:false}])
+                setChatHistory((prevC) => [...prevC, {'handler':'pensionclaimshandler','time':displayData, 'type':'option','message':'Pension Claims','entity':null, disabled:false}])
+                setChatHistory((prevC) => [...prevC, {'handler':'advanceclaimshandler','time':displayData, 'type':'option','message':'Advance Claims','entity':null, disabled:false}])
+                setChatHistory((prevC) => [...prevC, {'handler':'mainmenuhandler','time':displayData, 'type':'option','message':'Main Menu','entity':null, disabled:false}])
+            })
+            .catch(e => {
+                console.log(e)
+                renderWithRespone("Something went wrong")
+                // setDisplayActivityIndicator(false);
+            })
+
+        }
+
+
+
         
         const handlerMaps = {
             'pfHandler':ProvidentFundHandler,
             'pensionHandler':PensionHandler,
             'advanceHandler':AdvanceHandler,               
             'pfopeningbalancehandler':PFOpeningBalanceHandler,
+            'pfclosingbalancehandler':PFClosingBalanceHandler,
+            'claimCategoryHandler':ClaimCategoryHandler,
+            'pfclaimshandler':PFClaimsHandler,
+            'pensionclaimshandler':PensionClaimsHandler,
+            'advanceclaimshandler':AdvanceClaimsHandler,
             'mainmenuhandler': mainMenuHandler
         }
     
@@ -243,11 +363,10 @@ const Koylamitrascreen = ({navigation}) => {
         
 ////////////////////////////////////// Message Display Components ///////////////////////////
 
-    const PFOpeningBalanceTextHandler = () => {
 
-        const now = new Date()
-        const displayData = `  ${getDoubleDigits(now.getDate().toString())}/${getDoubleDigits((now.getMonth() + 1).toString())}/${now.getFullYear()} ${getDoubleDigits(now.getHours().toString())}:${getDoubleDigits(now.getMinutes().toString())}`
-
+const PFOpeningBalanceTextHandler = () => {
+    ////// Function for rendering history with response //////////
+    const renderWithRespone = botReponse => {
         disablePastInteractionsButtons()
         var dataToPush = [{
             time:displayData, 
@@ -258,21 +377,106 @@ const Koylamitrascreen = ({navigation}) => {
         {
             time:displayData, 
             type:'plaintext',
-            message:'Your PF opening balance for the year 2010 is Rs. 12000',
+            message:r,
             entity:'agent'
         },
         {'handler':'pfopeningbalancehandler','time':displayData, 'type':'option','message':'Opening Balance','entity':null, disabled:false},
-        {'handler':'pfopeningbalancehandler','time':displayData, 'type':'option','message':'Closing Balance','entity':null, disabled:false},
-        {'handler':'pfopeningbalancehandler','time':displayData, 'type':'option','message':'Rate Of Interest','entity':null, disabled:false},
+        {'handler':'pfclosingbalancehandler','time':displayData, 'type':'option','message':'Closing Balance','entity':null, disabled:false},
         {'handler':'mainmenuhandler','time':displayData, 'type':'option','message':'Main Menu','entity':null, disabled:false}
         ]
 
         dataToPush.forEach(i => setChatHistory(prevC => [...prevC, i]))
         setTextToType(false)
     }
+    //////////////////
+
+    const now = new Date()
+    const displayData = `  ${getDoubleDigits(now.getDate().toString())}/${getDoubleDigits((now.getMonth() + 1).toString())}/${now.getFullYear()} ${getDoubleDigits(now.getHours().toString())}:${getDoubleDigits(now.getMinutes().toString())}`
+
+    formJSON = {
+        "year": sendText,
+        "cmpfaccno":'CDAC/1/2345'
+    }
+    axios.post(`http://10.180.146.63:2888/claims-stats/getPfOpeningBalance/`, formJSON)
+    .then(data => {
+        r = data.data.response
+        renderWithRespone(r)
+        
+    })
+    .catch(e => {
+        console.log(e)
+        renderWithRespone("Something went wrong")
+        // setDisplayActivityIndicator(false);
+    })
+        
+}
+
+
+
+    const PFClosingBalanceTextHandler = () => {
+        ////// Function for rendering history with response //////////
+        const renderWithRespone = botReponse => {
+            disablePastInteractionsButtons()
+            var dataToPush = [{
+                time:displayData, 
+                type:'plaintext',
+                message:sendText,
+                entity:'human'
+            },
+            {
+                time:displayData, 
+                type:'plaintext',
+                message:r,
+                entity:'agent'
+            },
+            {'handler':'pfopeningbalancehandler','time':displayData, 'type':'option','message':'Opening Balance','entity':null, disabled:false},
+            {'handler':'pfclosingbalancehandler','time':displayData, 'type':'option','message':'Closing Balance','entity':null, disabled:false},
+            {'handler':'mainmenuhandler','time':displayData, 'type':'option','message':'Main Menu','entity':null, disabled:false}
+            ]
+    
+            dataToPush.forEach(i => setChatHistory(prevC => [...prevC, i]))
+            setTextToType(false)
+        }
+        //////////////////
+
+        const now = new Date()
+        const displayData = `  ${getDoubleDigits(now.getDate().toString())}/${getDoubleDigits((now.getMonth() + 1).toString())}/${now.getFullYear()} ${getDoubleDigits(now.getHours().toString())}:${getDoubleDigits(now.getMinutes().toString())}`
+
+        formJSON = {
+            "year": sendText,
+            "cmpfaccno":'CDAC/1/2345'
+        }
+        axios.post(`http://10.180.146.63:2888/claims-stats/getPfClosingBalance/`, formJSON)
+        .then(data => {
+            r = data.data.response
+            renderWithRespone(r)
+            
+        })
+        .catch(e => {
+            console.log(e)
+            renderWithRespone("Something went wrong")
+            // setDisplayActivityIndicator(false);
+        })
+            
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
 
     const handlerMaps = {
-        'pfopeningbalancetexthandler': PFOpeningBalanceTextHandler
+        'pfopeningbalancetexthandler': PFOpeningBalanceTextHandler,
+        'pfclosingbalancetexthandler': PFClosingBalanceTextHandler
     }
 
     const Sendcomponent = (props) => {
