@@ -71,7 +71,10 @@ const OptionButtonView = ({
           return item; // Keep other messages unchanged
         });
 
+        //update the new pfYearList against of old list
         setPfYearList(newList);
+
+        // ad new pflist to previous list
         setChatHistory((prevHistory) => [...prevHistory, ...newList]);
 
         break;
