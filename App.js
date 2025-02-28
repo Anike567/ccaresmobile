@@ -35,6 +35,7 @@ import { YearsOfServiceContext }  from './store/context/serviceYears';
 import Usermanualheaderarrow from './components/Usermanualheaderarrow';
 import { Ionicons } from '@expo/vector-icons';
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
+import KoylamitraParent from './Screens/KoylamitraParent';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -205,6 +206,16 @@ function DrawerNavs({ route })
                 drawerLabel: "Change Password",
                 headerTitleAlign: 'center'
               }}
+              />
+
+              <Drawer.Screen
+                key='Koylamitra'
+                name='Koyal Mitra'
+                options={{
+                  title :"Koyla Mitra",
+                  headerTitleAlign : 'center'
+                }}
+                component={KoylamitraParent}
               />
               {/* <Drawer.Screen 
               name="SubsectionStack" 
@@ -385,7 +396,7 @@ return (
       <Stack.Screen 
         name="Koylamitra" 
         key="Koylamitra"
-        component={Koylamitrascreen}  
+        component={KoylamitraParent}  
         options={{
           title:'',
           title:'Koyla Mitra',
