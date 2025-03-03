@@ -7,7 +7,6 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    // "jsEngine":"jsc",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -23,10 +22,16 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.ka344057.ccares"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "dcbf3373-efad-40a5-9e8b-05b6553c1204"
+      }
     }
   }
 }
