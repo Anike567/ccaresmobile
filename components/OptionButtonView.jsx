@@ -23,6 +23,8 @@ const OptionButtonView = ({
     grievanceList,
     setGrievanceList,
     mainMenuOption,
+    pfAdvanceDetailsList,
+    setPfAdvanceDetailsList,
   } = useContext(ChatHistoryContext);
 
   const getDoubleDigits = (value) =>
@@ -112,6 +114,31 @@ const OptionButtonView = ({
 
         break;
 
+      case "PFAdvanceDetails":
+        disableFunctionality();
+        let newPfAdvanceList = [
+          {
+            time: displayData,
+            type: "option",
+            message: "No More",
+            handler: "moreHandler",
+            entity: null,
+            disabled: true,
+            selected: false,
+            for: "PFAdvanceDetails",
+          },
+          {
+            time: displayData,
+            type: "option",
+            message: "Main Menu",
+            handler: "mainMenuHandler",
+            entity: null,
+            disabled: false,
+            selected: false,
+          },
+        ];
+
+        setChatHistory((prevHistory) => [...prevHistory, ...newPfAdvanceList]);
       default:
         break;
     }
@@ -131,31 +158,22 @@ const OptionButtonView = ({
     setChatHistory((prevHistory) => [...prevHistory, ...pensionYearList]);
   };
 
-  // handle click event on
+  // handle click event on PF Advance Details Option
 
   const pfAdvanceDetailsHandler = () => {
     //disable all the previous buttons before adding new ones
     disableFunctionality();
-    let newList = [
-      {
-        time: displayData,
-        type: "option",
-        message: "Main Menu",
-        handler: "mainMenuHandler",
-        entity: null,
-        disabled: false,
-        selected: false,
-      },
-    ];
-    setChatHistory((prevHistory) => [...prevHistory, ...newList]);
-    Alert.alert("advance details pressed");
+    setChatHistory((prevHistory) => [...prevHistory, ...pfAdvanceDetailsList]);
   };
+
+  // handle click event on Grievance Details  option
 
   const grievanceDetailsHandler = () => {
     disableFunctionality();
     setChatHistory((prevHistory) => [...prevHistory, ...grievanceList]);
   };
 
+  // handles click event on Track Claim option
   const trackClaimHandler = () => {
     disableFunctionality();
     let newList = [

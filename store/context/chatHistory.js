@@ -197,6 +197,47 @@ export const ChatHistoryProvider = ({ children }) => {
     },
   ]);
 
+  // this list store the data coming from server for PF Advance Details option
+  const [pfAdvanceDetailsList, setPfAdvanceDetailsList] = useState([
+    {
+      time: displayData,
+      type: "option",
+      message: "1969",
+      handler: "getPFDetailsForInterval",
+      entity: null,
+      disabled: false,
+      selected: false,
+    },
+    {
+      time: displayData,
+      type: "option",
+      message: "1970",
+      handler: "getPFDetailsForInterval",
+      entity: null,
+      disabled: false,
+      selected: false,
+    },
+    {
+      time: displayData,
+      type: "option",
+      message: "More",
+      handler: "moreHandler",
+      entity: null,
+      disabled: false,
+      selected: false,
+      for: "PFAdvanceDetails",
+    },
+    {
+      time: displayData,
+      type: "option",
+      message: "Main Menu",
+      handler: "mainMenuHandler",
+      entity: null,
+      disabled: false,
+      selected: false,
+    },
+  ]);
+
   // this list will stored gievence details list which will come from backend
   // currentl it is hardcoded data
 
@@ -318,6 +359,8 @@ export const ChatHistoryProvider = ({ children }) => {
         grievanceList,
         setGrievanceList,
         mainMenuOption,
+        pfAdvanceDetailsList,
+        setPfAdvanceDetailsList,
       }}
     >
       {children}
