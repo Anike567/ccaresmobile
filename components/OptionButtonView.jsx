@@ -48,9 +48,6 @@ const OptionButtonView = ({
 
   // this function handle the click event on More option on the basis of 'for' property
   const moreHandler = (targetIndex) => {
-    //disable all the previous buttons before adding new ones
-    disableFunctionality();
-
     switch (chatHistory[targetIndex]?.for) {
       case "PFDetails":
         disableFunctionality();
@@ -119,9 +116,9 @@ const OptionButtonView = ({
         let newPfAdvanceList = [
           {
             time: displayData,
-            type: "option",
+            type: "no_more",
             message: "No More",
-            handler: "moreHandler",
+            handler: "agent",
             entity: null,
             disabled: true,
             selected: false,
@@ -139,6 +136,39 @@ const OptionButtonView = ({
         ];
 
         setChatHistory((prevHistory) => [...prevHistory, ...newPfAdvanceList]);
+        break;
+
+      case "Grievance Details":
+        disableFunctionality();
+        let newPfGrievanceList = [
+          {
+            time: displayData,
+            type: "no_more",
+            message: "No More",
+            handler: null,
+            entity: "agent",
+            disabled: true,
+            selected: false,
+            for: "PFAdvanceDetails",
+          },
+          {
+            time: displayData,
+            type: "option",
+            message: "Main Menu",
+            handler: "mainMenuHandler",
+            entity: null,
+            disabled: false,
+            selected: false,
+          },
+        ];
+
+        setChatHistory((prevHistory) => [
+          ...prevHistory,
+          ...newPfGrievanceList,
+        ]);
+
+        break;
+
       default:
         break;
     }
@@ -238,22 +268,22 @@ const OptionButtonView = ({
   };
 
   return (
-    <View
-      style={{
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: entity === "agent" ? "flex-start" : "flex-end",
-      }}
-    >
-      {entity === "agent" && (
+    <View style={styles.container}>
+      {entity === "agent" ? (
         <FontAwesome5
-          color="black"
-          size={20}
           name="robot"
-          style={{ marginRight: 8 }}
+          size={30}
+          color="black"
+          style={[styles.icon]}
         />
-      )}
-
+      ) : entity === "human" ? (
+        <MaterialCommunityIcons
+          name="human"
+          size={30}
+          color="black"
+          style={styles.icon}
+        />
+      ) : null}
       <Pressable
         onPress={() => {
           if (!disabled) {
@@ -277,15 +307,6 @@ const OptionButtonView = ({
       >
         <Text style={{ color: disabled ? "#6D28D9" : "white" }}>{message}</Text>
       </Pressable>
-
-      {entity === "human" && (
-        <MaterialCommunityIcons
-          name="human"
-          size={40}
-          color="black"
-          style={{ marginLeft: 8 }}
-        />
-      )}
     </View>
   );
 };
@@ -293,6 +314,15 @@ const OptionButtonView = ({
 export default OptionButtonView;
 
 const styles = StyleSheet.create({
+  container: {
+    flexDirection: "column", // Stack elements vertically
+    // alignItems: "flex-end", // Center horizontally
+    justifyContent: "center",
+    width: "100%", // Ensure it doesn't shrink
+  },
+  icon: {
+    marginBottom: 10, // Space between icon and button
+  },
   optionButton: {
     padding: 10,
     borderRadius: 5,
