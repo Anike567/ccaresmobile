@@ -1,23 +1,22 @@
 import React from "react";
 import { View, Text, Pressable, StyleSheet } from "react-native";
-import { FontAwesome5, MaterialCommunityIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-export default function SelectedOption({
-  message,
-  disabled,
-  selected,
-  entity,
-}) {
+export default function SelectedOption({ message, disabled }) {
+  const now = new Date();
+  const dateAndTime = now.toLocaleString();
+
   return (
     <View style={styles.container}>
-      {/* Ensure only one icon is rendered above the button */}
-
-      <MaterialCommunityIcons
-        name="human"
-        size={30}
-        color="black"
-        style={styles.icon}
-      />
+      <View style={styles.dateText}>
+        <Text>{dateAndTime}</Text>
+        <MaterialCommunityIcons
+          name="human"
+          size={30}
+          color="black"
+          style={styles.icon}
+        />
+      </View>
       <Pressable
         style={[styles.optionButton, styles.bgColorBlack]}
         disabled={disabled}
@@ -30,13 +29,13 @@ export default function SelectedOption({
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "column", // Stack elements vertically
-    alignItems: "flex-end", // Center horizontally
+    flexDirection: "column",
+    alignItems: "flex-end",
     justifyContent: "center",
-    width: "100%", // Ensure it doesn't shrink
+    width: "100%",
   },
   icon: {
-    marginBottom: 10, // Space between icon and button
+    marginBottom: 10,
   },
   optionButton: {
     padding: 10,
@@ -60,5 +59,11 @@ const styles = StyleSheet.create({
   },
   buttonBgColor: {
     backgroundColor: "rgb(56, 189, 230)",
+  },
+  dateText: {
+    flexDirection: "row",
+    alignItems: "center",
+    fontSize: 14,
+    color: "black",
   },
 });

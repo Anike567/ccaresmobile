@@ -270,19 +270,27 @@ const OptionButtonView = ({
   return (
     <View style={styles.container}>
       {entity === "agent" ? (
-        <FontAwesome5
-          name="robot"
-          size={30}
-          color="black"
-          style={[styles.icon]}
-        />
+        <View style={styles.dateTime}>
+          <FontAwesome5
+            name="robot"
+            size={30}
+            color="black"
+            style={[styles.icon]}
+          />
+
+          <Text>{new Date().toLocaleString()}</Text>
+        </View>
       ) : entity === "human" ? (
-        <MaterialCommunityIcons
-          name="human"
-          size={30}
-          color="black"
-          style={styles.icon}
-        />
+        <View style={styles.dateTime}>
+          <Text style={{ marginLeft: 10 }}>{new Date().toLocaleString()}</Text>
+
+          <MaterialCommunityIcons
+            name="human"
+            size={30}
+            color="black"
+            style={styles.icon}
+          />
+        </View>
       ) : null}
       <Pressable
         onPress={() => {
@@ -341,5 +349,10 @@ const styles = StyleSheet.create({
   },
   buttonBgColor: {
     backgroundColor: "rgb(56, 189, 230)",
+  },
+  dateTime: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
   },
 });
