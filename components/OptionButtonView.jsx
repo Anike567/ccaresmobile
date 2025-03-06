@@ -1,9 +1,25 @@
 import { Text, View, StyleSheet, Pressable, Alert } from "react-native";
 import { useContext } from "react";
 import { FontAwesome5, MaterialCommunityIcons } from "@expo/vector-icons";
-import { ChatHistoryContext } from "../store/context/chatHistory";
+
+import { chatHistoryContext } from "../store/context/chatHistory";
+
+import {
+  chatHistory,
+  setChatHistory,
+  pfYearList,
+  setPfYearList,
+  pensionYearList,
+  setPensionYearList,
+  grievanceList,
+  setGrievanceList,
+  mainMenuOption,
+  pfAdvanceDetailsList,
+  setPfAdvanceDetailsList,
+} from "./../store/context/chatHistory";
 
 const OptionButtonView = ({
+  time,
   message,
   disabled,
   selected,
@@ -12,30 +28,10 @@ const OptionButtonView = ({
   entity,
 }) => {
   // destructuring all the context from chatHistory context provider
-
-  const {
-    chatHistory,
-    setChatHistory,
-    pfYearList,
-    setPfYearList,
-    pensionYearList,
-    setPensionYearList,
-    grievanceList,
-    setGrievanceList,
-    mainMenuOption,
-    pfAdvanceDetailsList,
-    setPfAdvanceDetailsList,
-  } = useContext(ChatHistoryContext);
+  const { chatHistory, setChatHistory } = useContext(chatHistoryContext);
 
   const getDoubleDigits = (value) =>
     value.toString().length === 1 ? `0${value}` : value;
-
-  const now = new Date();
-  const displayData = `${getDoubleDigits(now.getDate())}/${getDoubleDigits(
-    now.getMonth() + 1
-  )}/${now.getFullYear()} ${getDoubleDigits(now.getHours())}:${getDoubleDigits(
-    now.getMinutes()
-  )}`;
 
   //this function disable the all previous option buttons by setting the disabled property true
   const disableFunctionality = () => {
@@ -48,6 +44,14 @@ const OptionButtonView = ({
 
   // this function handle the click event on More option on the basis of 'for' property
   const moreHandler = (targetIndex) => {
+    // this will get the recent time
+    const now = new Date();
+    const displayData = `${getDoubleDigits(now.getDate())}/${getDoubleDigits(
+      now.getMonth() + 1
+    )}/${now.getFullYear()} ${getDoubleDigits(
+      now.getHours()
+    )}:${getDoubleDigits(now.getMinutes())}`;
+
     switch (chatHistory[targetIndex]?.for) {
       case "PFDetails":
         disableFunctionality();
@@ -65,13 +69,19 @@ const OptionButtonView = ({
           if (!["More", "Main Menu", "PF Details"].includes(item.message)) {
             interval1 = interval2 + 10; // Move to the next decade range correctly
             interval2 = interval2 + 20;
-            return { ...item, message: `${interval1}-${interval2}` };
+            return {
+              ...item,
+              time: displayData,
+              message: `${interval1}-${interval2}`,
+            };
+          } else {
+            return {
+              ...item,
+              time: displayData,
+            };
           }
           return item; // Keep other messages unchanged
         });
-
-        //update the new pfYearList against of old list
-        setPfYearList(newList);
 
         // ad new pflist to previous list
         setChatHistory((prevHistory) => [...prevHistory, ...newList]);
@@ -100,14 +110,18 @@ const OptionButtonView = ({
             pensionInterval2 = pensionInterval2 + 20;
             return {
               ...item,
+              time: displayData,
               message: `${pensionInterval1}-${pensionInterval2}`,
             };
+          } else {
+            return {
+              ...item,
+              time: displayData,
+            };
           }
-          return item; // Keep other messages unchanged
         });
 
         setChatHistory((prevHistory) => [...prevHistory, ...newPensionList]);
-        setPensionYearList(newPensionList);
 
         break;
 
@@ -176,13 +190,43 @@ const OptionButtonView = ({
 
   // handle click event on PF Details button
   const pfHandler = () => {
+    // this will update the current time
+
+    const now = new Date();
+    const displayData = `${getDoubleDigits(now.getDate())}/${getDoubleDigits(
+      now.getMonth() + 1
+    )}/${now.getFullYear()} ${getDoubleDigits(
+      now.getHours()
+    )}:${getDoubleDigits(now.getMinutes())}`;
+
     //disable all the previous buttons before adding new ones
     disableFunctionality();
+
+    // update the time of the pfYearList to display current time
+
+    for (let i = 0; i < pfYearList.length; i++) {
+      pfYearList[i].time = displayData;
+    }
     setChatHistory((prevHistory) => [...prevHistory, ...pfYearList]);
   };
 
   // handle click event on Pension Details button
   const pensionHandler = () => {
+    const now = new Date();
+    const displayData = `${getDoubleDigits(now.getDate())}/${getDoubleDigits(
+      now.getMonth() + 1
+    )}/${now.getFullYear()} ${getDoubleDigits(
+      now.getHours()
+    )}:${getDoubleDigits(now.getMinutes())}`;
+
+    //disable all the previous buttons before adding new ones
+    disableFunctionality();
+
+    // update the time of the pfYearList to display current time
+
+    for (let i = 0; i < pensionYearList.length; i++) {
+      pensionYearList[i].time = displayData;
+    }
     //disable all the previous buttons before adding new ones
     disableFunctionality();
     setChatHistory((prevHistory) => [...prevHistory, ...pensionYearList]);
@@ -191,6 +235,19 @@ const OptionButtonView = ({
   // handle click event on PF Advance Details Option
 
   const pfAdvanceDetailsHandler = () => {
+    //get current time
+    const now = new Date();
+    const displayData = `${getDoubleDigits(now.getDate())}/${getDoubleDigits(
+      now.getMonth() + 1
+    )}/${now.getFullYear()} ${getDoubleDigits(
+      now.getHours()
+    )}:${getDoubleDigits(now.getMinutes())}`;
+
+    // update the time of list
+
+    for (let i = 0; i < pfAdvanceDetailsList.length; i++) {
+      pfAdvanceDetailsList[i].time = displayData;
+    }
     //disable all the previous buttons before adding new ones
     disableFunctionality();
     setChatHistory((prevHistory) => [...prevHistory, ...pfAdvanceDetailsList]);
@@ -199,13 +256,37 @@ const OptionButtonView = ({
   // handle click event on Grievance Details  option
 
   const grievanceDetailsHandler = () => {
+    // get the current date
+
+    const now = new Date();
+    const displayData = `${getDoubleDigits(now.getDate())}/${getDoubleDigits(
+      now.getMonth() + 1
+    )}/${now.getFullYear()} ${getDoubleDigits(
+      now.getHours()
+    )}:${getDoubleDigits(now.getMinutes())}`;
+
+    // update the time of the list
+
+    for (let i = 0; i < grievanceList.length; i++) {
+      grievanceList[i].time = displayData;
+    }
     disableFunctionality();
     setChatHistory((prevHistory) => [...prevHistory, ...grievanceList]);
   };
 
   // handles click event on Track Claim option
   const trackClaimHandler = () => {
+    // get the current time
+
+    const now = new Date();
+    const displayData = `${getDoubleDigits(now.getDate())}/${getDoubleDigits(
+      now.getMonth() + 1
+    )}/${now.getFullYear()} ${getDoubleDigits(
+      now.getHours()
+    )}:${getDoubleDigits(now.getMinutes())}`;
+
     disableFunctionality();
+
     let newList = [
       {
         time: displayData,
@@ -218,17 +299,38 @@ const OptionButtonView = ({
       },
     ];
     setChatHistory((prevHistory) => [...prevHistory, ...newList]);
-    Alert.alert("track claim pressed");
   };
+
   // handles the click event on Main Menu
   const mainMenuHandler = () => {
+    // get the current time and date to display it
+    const now = new Date();
+    const displayData = `${getDoubleDigits(now.getDate())}/${getDoubleDigits(
+      now.getMonth() + 1
+    )}/${now.getFullYear()} ${getDoubleDigits(
+      now.getHours()
+    )}:${getDoubleDigits(now.getMinutes())}`;
+    console.log(displayData);
     //disable all the previous buttons
     disableFunctionality();
+    for (let i = 0; i < mainMenuOption.length; i++) {
+      mainMenuOption[i].time = displayData;
+    }
     //add main menus to previous history
     setChatHistory((prevHistory) => [...prevHistory, ...mainMenuOption]);
   };
 
   const getDetails = (index) => {
+    const getDoubleDigits = (value) =>
+      value.length === 1 ? `0${value}` : value;
+    const now = new Date();
+    const displayData = `${getDoubleDigits(
+      now.getDate().toString()
+    )}/${getDoubleDigits(
+      (now.getMonth() + 1).toString()
+    )}/${now.getFullYear()} ${getDoubleDigits(
+      now.getHours().toString()
+    )}:${getDoubleDigits(now.getMinutes().toString())}`;
     disableFunctionality();
 
     var [interval1, interval2] = chatHistory[index].message
@@ -278,7 +380,7 @@ const OptionButtonView = ({
             style={[styles.icon]}
           />
 
-          <Text>{new Date().toLocaleString()}</Text>
+          <Text>{time}</Text>
         </View>
       ) : entity === "human" ? (
         <View style={styles.dateTime}>

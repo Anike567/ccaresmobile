@@ -1,14 +1,14 @@
 import { useRef, useEffect, useContext } from "react";
-import { View, StyleSheet, FlatList, Pressable, Alert } from "react-native";
+import { View, StyleSheet, FlatList } from "react-native";
 import PlainTextView from "../components/PlainTextView";
 import OptionButtonView from "../components/OptionButtonView";
-import { ChatHistoryContext } from "../store/context/chatHistory";
 import SelectedOption from "../components/SelectedOption";
 import { NoMore } from "../components/NoMore";
+import { chatHistoryContext } from "../store/context/chatHistory";
 
 export default function KoylaMitraNew() {
   const flatlistRef = useRef(null);
-  const { chatHistory } = useContext(ChatHistoryContext);
+  const { chatHistory } = useContext(chatHistoryContext); // Fixed context reference
 
   // Scroll to end whenever chatHistory updates
   useEffect(() => {
@@ -36,6 +36,7 @@ export default function KoylaMitraNew() {
             )}
             {item.type === "option" && (
               <OptionButtonView
+                time={item.time}
                 message={item.message}
                 disabled={item.disabled}
                 selected={item.selected}
@@ -46,6 +47,7 @@ export default function KoylaMitraNew() {
             )}
             {item.type === "selectedoption" && (
               <SelectedOption
+                time={item.time}
                 message={item.message}
                 disabled={item.disabled}
                 selected={item.selected}
@@ -56,6 +58,7 @@ export default function KoylaMitraNew() {
             )}
             {item.type === "no_more" && (
               <NoMore
+                time={item.time}
                 message={item.message}
                 disabled={item.disabled}
                 selected={item.selected}

@@ -3,6 +3,7 @@ import { FontAwesome5 } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 export const NoMore = ({
+  time,
   message,
   disabled,
   selected,
@@ -13,12 +14,15 @@ export const NoMore = ({
   return (
     <View style={styles.container}>
       {entity === "agent" ? (
-        <FontAwesome5
-          name="robot"
-          size={30}
-          color="black"
-          style={[styles.icon]}
-        />
+        <View style={styles.dateText}>
+          <FontAwesome5
+            name="robot"
+            size={30}
+            color="black"
+            style={[styles.icon]}
+          />
+          <Text>{time}</Text>
+        </View>
       ) : entity === "human" ? (
         <MaterialCommunityIcons
           name="human"
@@ -55,5 +59,12 @@ const styles = StyleSheet.create({
     marginVertical: 3,
     width: 300,
     height: 50,
+  },
+  dateText: {
+    flexDirection: "row",
+    alignItems: "center",
+    fontSize: 14,
+    color: "black",
+    gap: 10,
   },
 });

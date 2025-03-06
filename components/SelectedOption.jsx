@@ -2,14 +2,11 @@ import React from "react";
 import { View, Text, Pressable, StyleSheet } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-export default function SelectedOption({ message, disabled }) {
-  const now = new Date();
-  const dateAndTime = now.toLocaleString();
-
+export default function SelectedOption({ time, message, disabled }) {
   return (
     <View style={styles.container}>
       <View style={styles.dateText}>
-        <Text>{dateAndTime}</Text>
+        <Text>{time}</Text>
         <MaterialCommunityIcons
           name="human"
           size={30}
