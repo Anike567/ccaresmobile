@@ -326,6 +326,54 @@ export const grievanceList = [
   },
 ];
 
+export const trackClaimList = [
+  {
+    time: displayData,
+    type: "selectedoption",
+    message: "Track Claim",
+    handler: "getPFDetailsForInterval",
+    entity: "human",
+    disabled: false,
+    selected: false,
+  },
+  {
+    time: displayData,
+    type: "option",
+    message: "Provident Fund",
+    handler: "getPFDetailsForInterval",
+    entity: "agent",
+    disabled: false,
+    selected: false,
+  },
+  {
+    time: displayData,
+    type: "option",
+    message: "Pension",
+    handler: "getPFDetailsForInterval",
+    entity: null,
+    disabled: false,
+    selected: false,
+  },
+  {
+    time: displayData,
+    type: "option",
+    message: "PF Advance",
+    handler: "getPFDetailsForInterval",
+    entity: null,
+    disabled: false,
+    selected: false,
+  },
+  {
+    time: displayData,
+    type: "option",
+    message: "Main Menu",
+    handler: "mainMenuHandler",
+    entity: "robot",
+    disabled: false,
+    selected: false,
+  },
+];
+
 export const mainMenuOption = [
   {
     time: displayData,

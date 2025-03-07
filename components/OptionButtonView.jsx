@@ -5,17 +5,12 @@ import { FontAwesome5, MaterialCommunityIcons } from "@expo/vector-icons";
 import { chatHistoryContext } from "../store/context/chatHistory";
 
 import {
-  chatHistory,
-  setChatHistory,
   pfYearList,
-  setPfYearList,
   pensionYearList,
-  setPensionYearList,
   grievanceList,
-  setGrievanceList,
   mainMenuOption,
   pfAdvanceDetailsList,
-  setPfAdvanceDetailsList,
+  trackClaimList,
 } from "./../store/context/chatHistory";
 
 const OptionButtonView = ({
@@ -82,7 +77,16 @@ const OptionButtonView = ({
           }
           return item; // Keep other messages unchanged
         });
-
+        // const selectedOption = {
+        //   time: displayData,
+        //   type: "selectedoption",
+        //   message: chatHistory[targetIndex].message,
+        //   handler: "getPFDetailsForInterval",
+        //   entity: "human",
+        //   disabled: false,
+        //   selected: false,
+        // };
+        // newList.splice(0, 0, selectedOption);
         // ad new pflist to previous list
         setChatHistory((prevHistory) => [...prevHistory, ...newList]);
 
@@ -287,18 +291,11 @@ const OptionButtonView = ({
 
     disableFunctionality();
 
-    let newList = [
-      {
-        time: displayData,
-        type: "option",
-        message: "Main Menu",
-        handler: "mainMenuHandler",
-        entity: null,
-        disabled: false,
-        selected: false,
-      },
-    ];
-    setChatHistory((prevHistory) => [...prevHistory, ...newList]);
+    for (let i = 0; i < trackClaimList.length; i++) {
+      trackClaimList[i].time = displayData;
+    }
+
+    setChatHistory((prevHistory) => [...prevHistory, ...trackClaimList]);
   };
 
   // handles the click event on Main Menu
@@ -337,6 +334,15 @@ const OptionButtonView = ({
       .split("-")
       .map(Number);
     let newList = [
+      {
+        time: displayData,
+        type: "selectedoption",
+        message: chatHistory[index].message,
+        handler: "getPFDetailsForInterval",
+        entity: "human",
+        disabled: false,
+        selected: false,
+      },
       {
         time: displayData,
         type: "plaintext",
