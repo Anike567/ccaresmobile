@@ -1,4 +1,5 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect } from "react";
+import { Appearance } from "react-native";
 
 const chatHistoryContext = createContext();
 
@@ -11,6 +12,9 @@ const ChatHistProvider = ({ children }) => {
     2,
     "0"
   )}:${String(now.getMinutes()).padStart(2, "0")}`;
+
+  // to check is user device dark mode is on or not
+  const colorScheme = Appearance.getColorScheme();
 
   // Chat history state
   const [chatHistory, setChatHistory] = useState([
@@ -68,8 +72,12 @@ const ChatHistProvider = ({ children }) => {
     },
   ]);
 
+  // state to hndle dark mode
+  const [isDarkModeOn, setDarkModeOn] = useState(false);
   return (
-    <chatHistoryContext.Provider value={{ chatHistory, setChatHistory }}>
+    <chatHistoryContext.Provider
+      value={{ chatHistory, setChatHistory, isDarkModeOn, setDarkModeOn }}
+    >
       {children}
     </chatHistoryContext.Provider>
   );

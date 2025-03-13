@@ -23,7 +23,8 @@ const OptionButtonView = ({
   entity,
 }) => {
   // destructuring all the context from chatHistory context provider
-  const { chatHistory, setChatHistory } = useContext(chatHistoryContext);
+  const { chatHistory, setChatHistory, isDarkModeOn } =
+    useContext(chatHistoryContext);
 
   const getDoubleDigits = (value) =>
     value.toString().length === 1 ? `0${value}` : value;
@@ -382,20 +383,26 @@ const OptionButtonView = ({
           <FontAwesome5
             name="robot"
             size={30}
-            color="black"
+            color={isDarkModeOn ? "white" : "black"}
             style={[styles.icon]}
           />
 
-          <Text>{time}</Text>
+          <Text style={{ color: isDarkModeOn ? "white" : "black" }}>
+            {time}
+          </Text>
         </View>
       ) : entity === "human" ? (
         <View style={styles.dateTime}>
-          <Text style={{ marginLeft: 10 }}>{new Date().toLocaleString()}</Text>
+          <Text
+            style={{ marginLeft: 10, color: isDarkModeOn ? "white" : "black" }}
+          >
+            {new Date().toLocaleString()}
+          </Text>
 
           <MaterialCommunityIcons
             name="human"
             size={30}
-            color="black"
+            color={isDarkModeOn ? "white" : "black"}
             style={styles.icon}
           />
         </View>

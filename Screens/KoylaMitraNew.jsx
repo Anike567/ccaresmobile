@@ -8,7 +8,7 @@ import { chatHistoryContext } from "../store/context/chatHistory";
 
 export default function KoylaMitraNew() {
   const flatlistRef = useRef(null);
-  const { chatHistory } = useContext(chatHistoryContext); // Fixed context reference
+  const { chatHistory, isDarkModeOn } = useContext(chatHistoryContext); // Fixed context reference
 
   // Scroll to end whenever chatHistory updates
   useEffect(() => {
@@ -20,7 +20,9 @@ export default function KoylaMitraNew() {
   }, [chatHistory]);
 
   return (
-    <View style={styles.container}>
+    <View
+      style={[styles.container, isDarkModeOn ? styles.bgDark : styles.bgLight]}
+    >
       <FlatList
         ref={flatlistRef}
         data={chatHistory}
@@ -83,8 +85,15 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     padding: 20,
+  },
+  bgDark: {
+    backgroundColor: "rgb(59, 57, 57)",
+  },
+
+  bgLight: {
     backgroundColor: "#f5f5f5",
   },
+
   itemContainer: {
     marginBottom: 10,
   },

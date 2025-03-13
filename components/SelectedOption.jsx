@@ -1,24 +1,35 @@
-import React from "react";
+import React, { useContext } from "react";
 import { View, Text, Pressable, StyleSheet } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-
+import { chatHistoryContext } from "../store/context/chatHistory";
 export default function SelectedOption({ time, message, disabled }) {
+  const { isDarkModeOn } = useContext(chatHistoryContext);
   return (
     <View style={styles.container}>
       <View style={styles.dateText}>
-        <Text>{time}</Text>
+        <Text style={{ color: isDarkModeOn ? "white" : "black" }}>{time}</Text>
         <MaterialCommunityIcons
           name="human"
           size={30}
-          color="black"
+          color={isDarkModeOn ? "white" : "black"}
           style={styles.icon}
         />
       </View>
       <Pressable
-        style={[styles.optionButton, styles.bgColorBlack]}
+        style={[
+          styles.optionButton,
+          isDarkModeOn ? styles.bgColorBlackDark : styles.bgColorBlack,
+        ]}
         disabled={disabled}
       >
-        <Text style={styles.buttonText}>{message}</Text>
+        <Text
+          style={[
+            styles.buttonText,
+            { color: isDarkModeOn ? "black" : "white" },
+          ]}
+        >
+          {message}
+        </Text>
       </Pressable>
     </View>
   );
@@ -43,7 +54,6 @@ const styles = StyleSheet.create({
     height: 50,
   },
   buttonText: {
-    color: "white",
     fontSize: 16,
     fontWeight: "bold",
   },
@@ -53,6 +63,9 @@ const styles = StyleSheet.create({
   },
   bgColorBlack: {
     backgroundColor: "black",
+  },
+  bgColorBlackDark: {
+    backgroundColor: "white",
   },
   buttonBgColor: {
     backgroundColor: "rgb(56, 189, 230)",

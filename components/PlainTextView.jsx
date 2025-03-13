@@ -1,6 +1,6 @@
 import { FontAwesome5 } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useState, useRef } from "react";
+import { useState, useRef, useContext } from "react";
 import {
   Text,
   View,
@@ -9,8 +9,9 @@ import {
   Pressable,
   Alert,
 } from "react-native";
-
+import { chatHistoryContext } from "../store/context/chatHistory";
 const PlainTextView = ({ message, time, entity }) => {
+  const { isDarkModeOn } = useContext(chatHistoryContext);
   return (
     <View
       style={{
@@ -23,8 +24,16 @@ const PlainTextView = ({ message, time, entity }) => {
     >
       {entity === "agent" ? (
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <FontAwesome5 name="robot" size={24} color="black" />
-          <Text style={{ marginLeft: 5 }}>{time}</Text>
+          <FontAwesome5
+            name="robot"
+            size={24}
+            color={isDarkModeOn ? "white" : "black"}
+          />
+          <Text
+            style={{ marginLeft: 5, color: isDarkModeOn ? "white" : "black" }}
+          >
+            {time}
+          </Text>
         </View>
       ) : null}
       {entity === "human" ? (
@@ -37,16 +46,25 @@ const PlainTextView = ({ message, time, entity }) => {
             borderColor: "black",
           }}
         >
-          <Text>{time}</Text>
+          <Text style={{ color: isDarkModeOn ? "white" : "black" }}>
+            {time}
+          </Text>
           <MaterialCommunityIcons
             name="human"
             size={24}
-            color="black"
+            color={isDarkModeOn ? "white" : "black"}
             style={{ marginLeft: 5 }}
           />
         </View>
       ) : null}
-      <Text style={styles.messageText}>{message}</Text>
+      <Text
+        style={[
+          styles.messageText,
+          isDarkModeOn ? styles.lightText : styles.darkText,
+        ]}
+      >
+        {message}
+      </Text>
     </View>
   );
 };
@@ -67,6 +85,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginVertical: 5,
   },
+  lightText: {
+    color: "white",
+  },
+  darkText: {
+    color: "black",
+  },
   optionButton: {
     padding: 10,
     borderRadius: 5,
@@ -85,5 +109,12 @@ const styles = StyleSheet.create({
   },
   buttonBgColor: {
     backgroundColor: "rgb(56, 189, 230)",
+  },
+  bgLight: {
+    backgroundColor: "#f5f5f5",
+  },
+
+  itemContainer: {
+    marginBottom: 10,
   },
 });
