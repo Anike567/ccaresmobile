@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useEffect, useState } from "react";
 import { Appearance } from "react-native";
 
 const chatHistoryContext = createContext();
@@ -73,7 +73,14 @@ const ChatHistProvider = ({ children }) => {
   ]);
 
   // state to hndle dark mode
-  const [isDarkModeOn, setDarkModeOn] = useState(false);
+  const [isDarkModeOn, setDarkModeOn] = useState(colorScheme == "dark");
+  useEffect(() => {
+    const subscription = Appearance.addChangeListener(({ colorScheme }) => {
+      setDarkModeOn(colorScheme === "dark");
+    });
+
+    return () => subscription.remove();
+  }, []);
   return (
     <chatHistoryContext.Provider
       value={{ chatHistory, setChatHistory, isDarkModeOn, setDarkModeOn }}

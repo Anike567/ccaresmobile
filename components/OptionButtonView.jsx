@@ -456,7 +456,11 @@ const styles = StyleSheet.create({
     height: 50,
   },
   disabledButton: {
-    backgroundColor: "#d3d3d3",
+    //backgroundColor: "#d3d3d3",
+    backgroundColor: "white",
+    borderColor: "rgb(168, 208, 220)",
+    borderWidth: 3,
+
     opacity: 0.7,
   },
   bgColorBlack: {
